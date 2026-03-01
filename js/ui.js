@@ -680,7 +680,7 @@ const UI = {
       <div class="settings-section" style="text-align:center; padding:20px 0;">
         <div style="color:var(--text-muted); font-size:0.75rem;">
           💳 Card Benefits Tracker<br>
-          <a href="https://github.com" target="_blank" style="color:var(--accent); text-decoration:none;">Fork on GitHub</a>
+          <a href="https://github.com/liqiqiii/card-benefits-tracker" target="_blank" style="color:var(--accent); text-decoration:none;">Fork on GitHub</a>
           • Open Source • MIT License
         </div>
       </div>

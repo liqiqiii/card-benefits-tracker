@@ -30,7 +30,7 @@ Never miss a credit card perk again. Track, check off, and get reminded about yo
 ## 🚀 Quick Start
 
 ### Use it directly
-1. Visit the [live site](https://yourusername.github.io/card-benefits-tracker/)
+1. Visit the [live site](https://liqiqiii.github.io/card-benefits-tracker/)
 2. Add cards from the catalog
 3. Check off benefits as you use them
 
@@ -38,7 +38,7 @@ Never miss a credit card perk again. Track, check off, and get reminded about yo
 1. **Fork** this repository
 2. Go to **Settings → Pages → Source → GitHub Actions**
 3. Push any change (or manually trigger the workflow)
-4. Your site is live at `https://yourusername.github.io/card-benefits-tracker/`
+4. Your site is live at `https://YOUR_USERNAME.github.io/card-benefits-tracker/`
 
 ## 🛠️ Customize
 
