@@ -328,6 +328,642 @@
           "redeemTip": "Pay for Global Entry or TSA PreCheck application with your card"
         }
       ]
+    },
+    {
+      "id": "amex-hilton-aspire",
+      "name": "Hilton Honors Aspire",
+      "issuer": "American Express",
+      "annualFee": 550,
+      "color": "#003B5C",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "hilton-aspire-resort",
+          "name": "Hilton Resort Credit",
+          "description": "$400/year resort credit at Hilton resorts",
+          "value": 400,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Charge purchases at Hilton resorts to your Aspire card"
+        },
+        {
+          "id": "hilton-aspire-airline",
+          "name": "Airline Fee Credit",
+          "description": "$200/year airline incidental fee credit",
+          "value": 200,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Select an airline in your Amex account, then use for incidental fees"
+        },
+        {
+          "id": "hilton-aspire-fhr",
+          "name": "FHR / Hotel Collection Credit",
+          "description": "$200/year Fine Hotels + Resorts or Hotel Collection credit",
+          "value": 200,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Book through Amex Travel FHR or Hotel Collection"
+        },
+        {
+          "id": "hilton-aspire-diamond",
+          "name": "Hilton Honors Diamond Status",
+          "description": "Complimentary Diamond status with the card",
+          "value": 0,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Automatic with card membership",
+          "redeemTip": "Diamond status is automatic — enjoy upgrades, lounge access, and breakfast"
+        },
+        {
+          "id": "hilton-aspire-free-night",
+          "name": "Free Night Award",
+          "description": "One free weekend night certificate annually",
+          "value": 200,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Awarded on card anniversary",
+          "redeemTip": "Certificate appears in your Hilton Honors account after anniversary"
+        },
+        {
+          "id": "hilton-aspire-clear",
+          "name": "CLEAR Plus Credit",
+          "description": "Up to $189/year CLEAR Plus membership credit",
+          "value": 189,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Enroll in CLEAR Plus and pay with your Aspire card"
+        }
+      ]
+    },
+    {
+      "id": "amex-hilton-surpass",
+      "name": "Hilton Honors Surpass",
+      "issuer": "American Express",
+      "annualFee": 150,
+      "color": "#5C6670",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "hilton-surpass-free-night",
+          "name": "Free Night Award",
+          "description": "One free night certificate after spending $15K in a year",
+          "value": 150,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Requires $15K annual spend",
+          "redeemTip": "Spend $15K on the card to earn the certificate"
+        },
+        {
+          "id": "hilton-surpass-gold",
+          "name": "Hilton Honors Gold Status",
+          "description": "Complimentary Gold status",
+          "value": 0,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Gold status is automatic — enjoy room upgrades and free breakfast at select properties"
+        }
+      ]
+    },
+    {
+      "id": "amex-delta-reserve",
+      "name": "Delta SkyMiles Reserve",
+      "issuer": "American Express",
+      "annualFee": 650,
+      "color": "#003366",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "delta-reserve-companion",
+          "name": "Companion Certificate",
+          "description": "Annual domestic first-class companion certificate",
+          "value": 400,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Awarded after $60K annual spend or on anniversary",
+          "redeemTip": "Certificate appears in your Delta account for domestic first-class companion booking"
+        },
+        {
+          "id": "delta-reserve-centurion",
+          "name": "Centurion Lounge Access",
+          "description": "Access to Centurion Lounges when flying Delta",
+          "value": 0,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Show your Reserve card at Centurion Lounges when flying Delta same day"
+        },
+        {
+          "id": "delta-reserve-clear",
+          "name": "CLEAR Plus Credit",
+          "description": "Up to $189/year CLEAR Plus membership credit",
+          "value": 189,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Enroll in CLEAR Plus and pay with your Delta Reserve card"
+        },
+        {
+          "id": "delta-reserve-rideshare",
+          "name": "Rideshare Credit",
+          "description": "$10/month rideshare credit (Uber/Lyft)",
+          "value": 10,
+          "frequency": "monthly",
+          "category": "travel",
+          "resetDay": 1,
+          "redeemTip": "Pay for Uber or Lyft rides with your Delta Reserve card"
+        },
+        {
+          "id": "delta-reserve-resy",
+          "name": "Resy Dining Credit",
+          "description": "$20/month dining credit at Resy restaurants",
+          "value": 20,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Dine at a Resy restaurant and pay with your Delta Reserve card"
+        }
+      ]
+    },
+    {
+      "id": "chase-ink-preferred",
+      "name": "Ink Business Preferred",
+      "issuer": "Chase",
+      "annualFee": 95,
+      "color": "#1B1B1B",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "ink-pref-cell",
+          "name": "Cell Phone Protection",
+          "description": "Up to $1000/claim cell phone protection",
+          "value": 0,
+          "frequency": "annual",
+          "category": "insurance",
+          "resetMonth": 1,
+          "note": "Pay your cell phone bill with this card to activate",
+          "redeemTip": "Pay your monthly cell phone bill with this card for coverage"
+        },
+        {
+          "id": "ink-pref-lyft",
+          "name": "Lyft Pink",
+          "description": "Complimentary Lyft Pink All Access membership",
+          "value": 17,
+          "frequency": "monthly",
+          "category": "travel",
+          "resetDay": 1,
+          "redeemTip": "Link your Chase card in the Lyft app to activate"
+        }
+      ]
+    },
+    {
+      "id": "chase-freedom-unlimited",
+      "name": "Freedom Unlimited",
+      "issuer": "Chase",
+      "annualFee": 0,
+      "color": "#0D5F2D",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "cfu-dashpass",
+          "name": "DoorDash DashPass",
+          "description": "Complimentary DashPass membership",
+          "value": 10,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Activate DashPass through Chase's DoorDash benefit portal"
+        },
+        {
+          "id": "cfu-instacart",
+          "name": "Instacart+ Membership",
+          "description": "Complimentary Instacart+ membership",
+          "value": 8,
+          "frequency": "monthly",
+          "category": "shopping",
+          "resetDay": 1,
+          "redeemTip": "Activate through Chase's Instacart benefit portal"
+        }
+      ]
+    },
+    {
+      "id": "chase-freedom-flex",
+      "name": "Freedom Flex",
+      "issuer": "Chase",
+      "annualFee": 0,
+      "color": "#2E7D32",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "cff-quarterly",
+          "name": "5% Quarterly Categories",
+          "description": "5% cash back on quarterly rotating categories (up to $1,500/quarter)",
+          "value": 75,
+          "frequency": "quarterly",
+          "category": "cashback",
+          "resetMonths": [1, 4, 7, 10],
+          "note": "Must activate each quarter",
+          "redeemTip": "Log in to Chase and activate the quarterly bonus category each quarter"
+        },
+        {
+          "id": "cff-dashpass",
+          "name": "DoorDash DashPass",
+          "description": "Complimentary DashPass membership",
+          "value": 10,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Activate DashPass through Chase's DoorDash benefit portal"
+        },
+        {
+          "id": "cff-instacart",
+          "name": "Instacart+ Membership",
+          "description": "Complimentary Instacart+ membership",
+          "value": 8,
+          "frequency": "monthly",
+          "category": "shopping",
+          "resetDay": 1,
+          "redeemTip": "Activate through Chase's Instacart benefit portal"
+        }
+      ]
+    },
+    {
+      "id": "discover-it",
+      "name": "Discover it Cash Back",
+      "issuer": "Discover",
+      "annualFee": 0,
+      "color": "#FF6B00",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "discover-quarterly",
+          "name": "5% Quarterly Categories",
+          "description": "5% cash back on quarterly rotating categories (up to $1,500/quarter)",
+          "value": 75,
+          "frequency": "quarterly",
+          "category": "cashback",
+          "resetMonths": [1, 4, 7, 10],
+          "note": "Must activate each quarter",
+          "redeemTip": "Log in to Discover and activate the quarterly bonus each quarter"
+        }
+      ]
+    },
+    {
+      "id": "us-bank-altitude-reserve",
+      "name": "Altitude Reserve Visa Infinite",
+      "issuer": "U.S. Bank",
+      "annualFee": 400,
+      "color": "#1B365D",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "usb-alt-travel",
+          "name": "Travel Credit",
+          "description": "$325/year annual travel credit",
+          "value": 325,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Resets on cardmember anniversary",
+          "redeemTip": "Travel purchases are automatically credited"
+        },
+        {
+          "id": "usb-alt-global-entry",
+          "name": "Global Entry / TSA PreCheck",
+          "description": "$100 Global Entry or TSA PreCheck credit",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 4 years",
+          "redeemTip": "Pay for application with your card"
+        }
+      ]
+    },
+    {
+      "id": "marriott-bonvoy-brilliant",
+      "name": "Bonvoy Brilliant",
+      "issuer": "American Express",
+      "annualFee": 650,
+      "color": "#8B0000",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "bonvoy-dining",
+          "name": "Dining Credit",
+          "description": "$25/month dining credit at restaurants worldwide",
+          "value": 25,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Dine at any restaurant and pay with your Bonvoy Brilliant card"
+        },
+        {
+          "id": "bonvoy-marriott",
+          "name": "Marriott Property Credit",
+          "description": "$25/month at participating Marriott properties",
+          "value": 25,
+          "frequency": "monthly",
+          "category": "travel",
+          "resetDay": 1,
+          "redeemTip": "Charge purchases at Marriott properties to your card"
+        },
+        {
+          "id": "bonvoy-free-night",
+          "name": "Free Night Award",
+          "description": "Annual free night award (up to 85K points value)",
+          "value": 400,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Awarded on card anniversary",
+          "redeemTip": "Certificate appears in your Marriott Bonvoy account"
+        },
+        {
+          "id": "bonvoy-platinum",
+          "name": "Marriott Platinum Elite Status",
+          "description": "Complimentary Platinum Elite status",
+          "value": 0,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Platinum Elite is automatic — enjoy upgrades, lounge access, late checkout"
+        }
+      ]
+    },
+    {
+      "id": "amex-business-platinum",
+      "name": "Business Platinum Card",
+      "issuer": "American Express",
+      "annualFee": 695,
+      "color": "#4A4A4A",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "biz-plat-dell",
+          "name": "Dell Technologies Credit",
+          "description": "$100 semi-annual Dell credit (Jan–Jun / Jul–Dec)",
+          "value": 100,
+          "frequency": "semi-annual",
+          "category": "business",
+          "resetMonths": [1, 7],
+          "redeemTip": "Shop at Dell.com with your Business Platinum card"
+        },
+        {
+          "id": "biz-plat-indeed",
+          "name": "Indeed Credit",
+          "description": "$360/year Indeed hiring credit ($90/quarter)",
+          "value": 90,
+          "frequency": "quarterly",
+          "category": "business",
+          "resetMonths": [1, 4, 7, 10],
+          "redeemTip": "Use Indeed sponsored job listings and pay with your Business Platinum"
+        },
+        {
+          "id": "biz-plat-airline",
+          "name": "Airline Fee Credit",
+          "description": "$200/year airline incidental fee credit",
+          "value": 200,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Select an airline and use card for incidental fees"
+        },
+        {
+          "id": "biz-plat-clear",
+          "name": "CLEAR Plus Credit",
+          "description": "Up to $189/year CLEAR Plus membership credit",
+          "value": 189,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Enroll in CLEAR Plus and pay with your Business Platinum"
+        }
+      ]
+    },
+    {
+      "id": "boa-premium-rewards",
+      "name": "Premium Rewards",
+      "issuer": "Bank of America",
+      "annualFee": 95,
+      "color": "#C41230",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "boa-airline",
+          "name": "Airline Incidental Credit",
+          "description": "$100/year airline incidental fee credit",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Use card for incidental airline purchases like bags, seat upgrades, etc."
+        },
+        {
+          "id": "boa-tsa",
+          "name": "TSA PreCheck / Global Entry",
+          "description": "Up to $100 Global Entry or TSA PreCheck credit",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 4 years",
+          "redeemTip": "Pay for application with your card"
+        }
+      ]
+    },
+    {
+      "id": "wells-fargo-autograph-journey",
+      "name": "Autograph Journey",
+      "issuer": "Wells Fargo",
+      "annualFee": 95,
+      "color": "#CD1309",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "wf-aj-airline",
+          "name": "Airline Credit",
+          "description": "$50/year airline incidental credit",
+          "value": 50,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Use for airline incidental purchases"
+        },
+        {
+          "id": "wf-aj-hotel",
+          "name": "Hotel Credit",
+          "description": "$100/year hotel credit via Wells Fargo Travel",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Book hotels through Wells Fargo Travel portal"
+        }
+      ]
+    },
+    {
+      "id": "bilt-mastercard",
+      "name": "Bilt Mastercard",
+      "issuer": "Bilt / Wells Fargo",
+      "annualFee": 0,
+      "color": "#000000",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "bilt-rent-day",
+          "name": "Rent Day (1st of Month)",
+          "description": "Double points on dining, 3x on travel on the 1st of each month",
+          "value": 0,
+          "frequency": "monthly",
+          "category": "points",
+          "resetDay": 1,
+          "note": "Must make 5 transactions per statement period to earn points",
+          "redeemTip": "Make purchases on the 1st of each month for bonus multipliers"
+        }
+      ]
+    },
+    {
+      "id": "amex-green",
+      "name": "Green Card",
+      "issuer": "American Express",
+      "annualFee": 150,
+      "color": "#2E7D32",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "amex-green-lounge",
+          "name": "LoungeBuddy Credit",
+          "description": "$100/year LOUNGEBUDDY airport lounge credit",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Use LoungeBuddy app and pay with your Green card"
+        },
+        {
+          "id": "amex-green-clear",
+          "name": "CLEAR Plus Credit",
+          "description": "Up to $189/year CLEAR Plus membership credit",
+          "value": 189,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Enroll in CLEAR Plus and pay with your Green card"
+        }
+      ]
+    },
+    {
+      "id": "iqvia-world-elite",
+      "name": "World of Hyatt",
+      "issuer": "Chase",
+      "annualFee": 95,
+      "color": "#6B2D5B",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "hyatt-free-night",
+          "name": "Free Night Award",
+          "description": "Annual free night at any Category 1-4 Hyatt",
+          "value": 150,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Awarded on card anniversary",
+          "redeemTip": "Certificate appears in your World of Hyatt account"
+        },
+        {
+          "id": "hyatt-discoverist",
+          "name": "Discoverist Status",
+          "description": "Automatic World of Hyatt Discoverist status",
+          "value": 0,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Status is automatic with card membership"
+        }
+      ]
+    },
+    {
+      "id": "ihg-premier",
+      "name": "IHG One Rewards Premier",
+      "issuer": "Chase",
+      "annualFee": 99,
+      "color": "#2D5F2D",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "ihg-free-night",
+          "name": "Free Night Award",
+          "description": "Annual free night award (up to 40K points value)",
+          "value": 120,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Awarded on card anniversary",
+          "redeemTip": "Certificate appears in your IHG account"
+        },
+        {
+          "id": "ihg-4th-night",
+          "name": "4th Night Free",
+          "description": "4th night free on reward stays of 4+ nights",
+          "value": 0,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Book 4+ night reward stays to get the 4th night free automatically"
+        },
+        {
+          "id": "ihg-global-entry",
+          "name": "Global Entry / TSA PreCheck",
+          "description": "$100 Global Entry or TSA PreCheck credit",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 4 years",
+          "redeemTip": "Pay for application with your card"
+        }
+      ]
+    },
+    {
+      "id": "united-club-infinite",
+      "name": "United Club Infinite",
+      "issuer": "Chase",
+      "annualFee": 525,
+      "color": "#002244",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "united-club-membership",
+          "name": "United Club Membership",
+          "description": "Full United Club lounge membership",
+          "value": 650,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Membership is automatic — show your card or boarding pass at United Clubs"
+        },
+        {
+          "id": "united-club-global-entry",
+          "name": "Global Entry / TSA PreCheck",
+          "description": "$100 Global Entry or TSA PreCheck credit",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 4 years",
+          "redeemTip": "Pay for application with your card"
+        }
+      ]
     }
   ]
 }

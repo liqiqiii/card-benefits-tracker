@@ -408,6 +408,7 @@ const UI = {
   renderCatalog(searchQuery) {
     const main = document.getElementById('main-content');
     const query = (searchQuery || '').toLowerCase();
+    this._catalogQuery = searchQuery || '';
 
     let filteredCards = this.cardData;
     if (query) {
@@ -418,17 +419,58 @@ const UI = {
       );
     }
 
-    let html = `
+    // Only re-render the card list if search bar already exists
+    const existingSearch = main.querySelector('.search-bar input');
+    if (existingSearch && searchQuery !== undefined) {
+      // Just update the card list, keep the search bar intact
+      const listEl = document.getElementById('catalog-card-list');
+      if (listEl) {
+        listEl.innerHTML = this._renderCatalogCards(filteredCards);
+        return;
+      }
+    }
+
+    main.innerHTML = `
       <div class="search-bar">
         <span class="search-icon">🔍</span>
         <input type="text" placeholder="Search cards or benefits..."
-               value="${searchQuery || ''}"
-               oninput="UI.renderCatalog(this.value)">
+               value="${this._catalogQuery}"
+               oninput="UI._onCatalogSearch(this.value)">
       </div>
-      <div class="card-grid">
+      <div class="card-grid" id="catalog-card-list">
+        ${this._renderCatalogCards(filteredCards)}
+      </div>
+      <div style="margin-top:20px; text-align:center;">
+        <button class="add-card-btn" onclick="UI.showCustomCardForm()" style="max-width:300px; margin:0 auto;">
+          <span class="icon">✏️</span>
+          Add Custom Card
+        </button>
+      </div>
     `;
+  },
 
-    for (const card of filteredCards) {
+  _onCatalogSearch(value) {
+    this._catalogQuery = value;
+    const query = value.toLowerCase();
+
+    let filteredCards = this.cardData;
+    if (query) {
+      filteredCards = this.cardData.filter(c =>
+        c.name.toLowerCase().includes(query) ||
+        c.issuer.toLowerCase().includes(query) ||
+        c.benefits.some(b => b.name.toLowerCase().includes(query))
+      );
+    }
+
+    const listEl = document.getElementById('catalog-card-list');
+    if (listEl) {
+      listEl.innerHTML = this._renderCatalogCards(filteredCards);
+    }
+  },
+
+  _renderCatalogCards(cards) {
+    let html = '';
+    for (const card of cards) {
       const isOwned = Storage.hasCard(card.id);
       const totalValue = card.benefits.reduce((sum, b) => sum + b.value, 0);
 
@@ -449,18 +491,7 @@ const UI = {
         </div>
       `;
     }
-
-    html += `
-      </div>
-      <div style="margin-top:20px; text-align:center;">
-        <button class="add-card-btn" onclick="UI.showCustomCardForm()" style="max-width:300px; margin:0 auto;">
-          <span class="icon">✏️</span>
-          Add Custom Card
-        </button>
-      </div>
-    `;
-
-    main.innerHTML = html;
+    return html;
   },
 
   toggleCatalogCard(cardId) {
@@ -472,7 +503,8 @@ const UI = {
       const card = this.getCard(cardId);
       App.showToast(`✅ ${card.issuer} ${card.name} added!`, 'success');
     }
-    this.renderCatalog();
+    // Only update the card list, not the search input
+    this._onCatalogSearch(this._catalogQuery || '');
   },
 
   // ========================
