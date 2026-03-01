@@ -1,0 +1,333 @@
+{
+  "cards": [
+    {
+      "id": "amex-platinum",
+      "name": "The Platinum Card",
+      "issuer": "American Express",
+      "annualFee": 695,
+      "color": "#8C8C8C",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "amex-plat-uber",
+          "name": "Uber Cash",
+          "description": "$15/month in Uber Cash ($35 in December)",
+          "value": 15,
+          "valueDec": 35,
+          "frequency": "monthly",
+          "category": "travel",
+          "resetDay": 1,
+          "redeemTip": "Automatically added to linked Uber account each month"
+        },
+        {
+          "id": "amex-plat-digital",
+          "name": "Digital Entertainment Credit",
+          "description": "$20/month for select streaming (Disney+, Hulu, ESPN+, NYT, etc.)",
+          "value": 20,
+          "frequency": "monthly",
+          "category": "entertainment",
+          "resetDay": 1,
+          "redeemTip": "Pay for an eligible streaming subscription with your Platinum card"
+        },
+        {
+          "id": "amex-plat-walmart",
+          "name": "Walmart+ Membership",
+          "description": "$12.95/month Walmart+ membership credit",
+          "value": 12.95,
+          "frequency": "monthly",
+          "category": "shopping",
+          "resetDay": 1,
+          "redeemTip": "Enroll in Walmart+ and pay with your Platinum card"
+        },
+        {
+          "id": "amex-plat-equinox",
+          "name": "Equinox+ Credit",
+          "description": "Up to $25/month Equinox+ digital fitness credit",
+          "value": 25,
+          "frequency": "monthly",
+          "category": "lifestyle",
+          "resetDay": 1,
+          "redeemTip": "Subscribe to Equinox+ and pay with your Platinum card"
+        },
+        {
+          "id": "amex-plat-saks",
+          "name": "Saks Fifth Avenue Credit",
+          "description": "$50 semi-annual Saks credit (Jan–Jun / Jul–Dec)",
+          "value": 50,
+          "frequency": "semi-annual",
+          "category": "shopping",
+          "resetMonths": [1, 7],
+          "redeemTip": "Shop at Saks Fifth Avenue (online or in-store) with your Platinum card"
+        },
+        {
+          "id": "amex-plat-resy",
+          "name": "Resy Dining Credit",
+          "description": "$50 semi-annual dining credit at Resy restaurants (Jan–Jun / Jul–Dec)",
+          "value": 50,
+          "frequency": "semi-annual",
+          "category": "dining",
+          "resetMonths": [1, 7],
+          "redeemTip": "Dine at a Resy restaurant and pay with your Platinum card"
+        },
+        {
+          "id": "amex-plat-airline",
+          "name": "Airline Fee Credit",
+          "description": "$200/year airline incidental fee credit",
+          "value": 200,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Select an airline in your Amex account, then use card for incidental fees (bags, seats, etc.)"
+        },
+        {
+          "id": "amex-plat-fhr",
+          "name": "FHR / Hotel Collection Credit",
+          "description": "$200/year Fine Hotels + Resorts or Hotel Collection credit",
+          "value": 200,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Book through Amex Travel using FHR or The Hotel Collection"
+        },
+        {
+          "id": "amex-plat-clear",
+          "name": "CLEAR Plus Credit",
+          "description": "Up to $189/year CLEAR Plus membership credit",
+          "value": 189,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Enroll in CLEAR Plus and pay with your Platinum card"
+        },
+        {
+          "id": "amex-plat-global-entry",
+          "name": "Global Entry / TSA PreCheck",
+          "description": "$100 every 4.5 years for Global Entry or TSA PreCheck",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 4.5 years, not annually — track manually",
+          "redeemTip": "Apply for Global Entry or TSA PreCheck and pay with your Platinum card"
+        }
+      ]
+    },
+    {
+      "id": "amex-gold",
+      "name": "Gold Card",
+      "issuer": "American Express",
+      "annualFee": 325,
+      "color": "#C5A04E",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "amex-gold-uber",
+          "name": "Uber Cash",
+          "description": "$10/month in Uber Eats credit",
+          "value": 10,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Automatically added to linked Uber account — use on Uber Eats"
+        },
+        {
+          "id": "amex-gold-dining",
+          "name": "Dining Credit",
+          "description": "$10/month at select restaurants (GrubHub, Goldbelly, Wine.com, etc.)",
+          "value": 10,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Order from GrubHub, The Cheesecake Factory, Goldbelly, Wine.com, or Milk Bar"
+        },
+        {
+          "id": "amex-gold-dunkin",
+          "name": "Dunkin' Credit",
+          "description": "$7/month Dunkin' credit",
+          "value": 7,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Pay at Dunkin' with your Gold card"
+        }
+      ]
+    },
+    {
+      "id": "chase-sapphire-reserve",
+      "name": "Sapphire Reserve",
+      "issuer": "Chase",
+      "annualFee": 550,
+      "color": "#1A3C6E",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "csr-travel",
+          "name": "Travel Credit",
+          "description": "$300/year automatic travel credit",
+          "value": 300,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Resets on cardmember anniversary, not calendar year",
+          "redeemTip": "Any travel purchase automatically triggers the credit"
+        },
+        {
+          "id": "csr-doordash",
+          "name": "DoorDash DashPass",
+          "description": "Complimentary DashPass membership + credits",
+          "value": 10,
+          "frequency": "monthly",
+          "category": "dining",
+          "resetDay": 1,
+          "redeemTip": "Activate DashPass through your Chase DoorDash benefit portal"
+        },
+        {
+          "id": "csr-lyft",
+          "name": "Lyft Pink",
+          "description": "Complimentary Lyft Pink All Access membership",
+          "value": 17,
+          "frequency": "monthly",
+          "category": "travel",
+          "resetDay": 1,
+          "redeemTip": "Link your Chase card in the Lyft app to activate"
+        },
+        {
+          "id": "csr-instacart",
+          "name": "Instacart+ Membership",
+          "description": "Complimentary Instacart+ membership",
+          "value": 8,
+          "frequency": "monthly",
+          "category": "shopping",
+          "resetDay": 1,
+          "redeemTip": "Activate through Chase's Instacart benefit portal"
+        },
+        {
+          "id": "csr-global-entry",
+          "name": "Global Entry / TSA PreCheck",
+          "description": "$100 every 4 years for Global Entry or TSA PreCheck",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 4 years, not annually",
+          "redeemTip": "Pay for Global Entry or TSA PreCheck application with your card"
+        }
+      ]
+    },
+    {
+      "id": "chase-sapphire-preferred",
+      "name": "Sapphire Preferred",
+      "issuer": "Chase",
+      "annualFee": 95,
+      "color": "#2E5FA1",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "csp-hotel",
+          "name": "Hotel Credit",
+          "description": "$50/year hotel credit on Chase Travel bookings",
+          "value": 50,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Resets on cardmember anniversary",
+          "redeemTip": "Book a hotel through Chase Travel portal"
+        },
+        {
+          "id": "csp-peloton",
+          "name": "Peloton Credit",
+          "description": "Complimentary Peloton App+ membership",
+          "value": 13,
+          "frequency": "monthly",
+          "category": "lifestyle",
+          "resetDay": 1,
+          "redeemTip": "Activate through Chase's Peloton benefit portal"
+        },
+        {
+          "id": "csp-instacart",
+          "name": "Instacart+ Membership",
+          "description": "Complimentary Instacart+ membership",
+          "value": 8,
+          "frequency": "monthly",
+          "category": "shopping",
+          "resetDay": 1,
+          "redeemTip": "Activate through Chase's Instacart benefit portal"
+        }
+      ]
+    },
+    {
+      "id": "capital-one-venture-x",
+      "name": "Venture X",
+      "issuer": "Capital One",
+      "annualFee": 395,
+      "color": "#004977",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "ventx-travel",
+          "name": "Travel Credit",
+          "description": "$300/year travel credit through Capital One Travel",
+          "value": 300,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Resets on cardmember anniversary",
+          "redeemTip": "Book travel through Capital One Travel portal"
+        },
+        {
+          "id": "ventx-anniversary",
+          "name": "Anniversary Bonus",
+          "description": "10,000 bonus miles on card anniversary",
+          "value": 100,
+          "frequency": "annual",
+          "category": "points",
+          "resetMonth": 1,
+          "note": "Awarded automatically on anniversary",
+          "redeemTip": "Miles are automatically deposited — no action needed"
+        },
+        {
+          "id": "ventx-global-entry",
+          "name": "Global Entry / TSA PreCheck",
+          "description": "$100 every 4 years for Global Entry or TSA PreCheck",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 4 years, not annually",
+          "redeemTip": "Pay for Global Entry or TSA PreCheck application with your card"
+        }
+      ]
+    },
+    {
+      "id": "citi-strata-premier",
+      "name": "Strata Premier",
+      "issuer": "Citi",
+      "annualFee": 95,
+      "color": "#003B70",
+      "textColor": "#FFFFFF",
+      "benefits": [
+        {
+          "id": "citi-hotel",
+          "name": "Hotel Credit",
+          "description": "$100/year hotel credit on Citi Travel bookings",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "redeemTip": "Book a hotel through the Citi Travel portal"
+        },
+        {
+          "id": "citi-global-entry",
+          "name": "Global Entry / TSA PreCheck",
+          "description": "$100 every 5 years for Global Entry or TSA PreCheck",
+          "value": 100,
+          "frequency": "annual",
+          "category": "travel",
+          "resetMonth": 1,
+          "note": "Every 5 years, not annually",
+          "redeemTip": "Pay for Global Entry or TSA PreCheck application with your card"
+        }
+      ]
+    }
+  ]
+}
