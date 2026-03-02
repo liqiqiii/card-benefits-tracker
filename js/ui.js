@@ -2,9 +2,37 @@
  * ui.js — DOM rendering & event handlers for all views
  */
 
+const ISSUER_LOGOS = {
+  'American Express': { emoji: '🔷', abbr: 'AMEX', color: '#006FCF' },
+  'Chase': { emoji: '🏦', abbr: 'CHASE', color: '#124A8C' },
+  'Citi': { emoji: '🔵', abbr: 'CITI', color: '#003B70' },
+  'Capital One': { emoji: '🅾️', abbr: 'CAP1', color: '#004977' },
+  'Discover': { emoji: '🟠', abbr: 'DISC', color: '#FF6B00' },
+  'U.S. Bank': { emoji: '🏛️', abbr: 'USB', color: '#1B365D' },
+  'Bank of America': { emoji: '🔴', abbr: 'BOA', color: '#C41230' },
+  'Wells Fargo': { emoji: '🟡', abbr: 'WF', color: '#CD1309' },
+  'Bilt / Wells Fargo': { emoji: '⬛', abbr: 'BILT', color: '#000000' },
+};
+
 const UI = {
   cardData: [],
   showHidden: false,
+
+  getIssuerInfo(issuer) {
+    return ISSUER_LOGOS[issuer] || { emoji: '💳', abbr: issuer.substring(0, 4).toUpperCase(), color: '#666' };
+  },
+
+  _showSyncIndicator(state) {
+    const el = document.getElementById('sync-indicator');
+    if (!el) return;
+    el.classList.remove('hidden', 'syncing', 'synced', 'error');
+    el.classList.add(state);
+    switch (state) {
+      case 'syncing': el.textContent = '⟳ Syncing...'; break;
+      case 'synced': el.textContent = '✓ Synced'; setTimeout(() => el.classList.add('hidden'), 2000); break;
+      case 'error': el.textContent = '✗ Sync failed'; setTimeout(() => el.classList.add('hidden'), 3000); break;
+    }
+  },
 
   async loadCardData() {
     try {
@@ -279,6 +307,13 @@ const UI = {
     document.getElementById('summary-redeemed').textContent = `${redeemed.length}/${visible.length}`;
     document.getElementById('summary-saved').textContent = `$${totalSaved.toFixed(0)}`;
     document.getElementById('summary-expiring').textContent = expiringSoon.length;
+
+    // Update ring
+    const pct = visible.length > 0 ? (redeemed.length / visible.length * 100) : 0;
+    const ringFill = document.getElementById('summary-ring-fill');
+    if (ringFill) {
+      ringFill.setAttribute('stroke-dasharray', `${pct}, 100`);
+    }
   },
 
   // ========================
@@ -306,7 +341,10 @@ const UI = {
              onclick="UI.showCardDetail('${card.id}')">
           <button class="card-action-btn" onclick="event.stopPropagation(); UI.removeCard('${card.id}')" title="Remove card">✕</button>
           <div>
-            <div class="credit-card-issuer">${card.issuer}</div>
+            <div class="credit-card-issuer-row">
+              <span class="credit-card-logo">${this.getIssuerInfo(card.issuer).emoji}</span>
+              <span class="credit-card-issuer">${card.issuer}</span>
+            </div>
             <div class="credit-card-name">${card.name}</div>
           </div>
           <div class="credit-card-bottom">
@@ -473,10 +511,13 @@ const UI = {
     for (const card of cards) {
       const isOwned = Storage.hasCard(card.id);
       const totalValue = card.benefits.reduce((sum, b) => sum + b.value, 0);
+      const issuerInfo = this.getIssuerInfo(card.issuer);
 
       html += `
         <div class="catalog-card">
-          <div class="catalog-card-color" style="background:${card.color}"></div>
+          <div class="catalog-card-color" style="background:${card.color}">
+            <span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1rem;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.5))">${issuerInfo.emoji}</span>
+          </div>
           <div class="catalog-card-info">
             <div class="catalog-card-name">${card.name}</div>
             <div class="catalog-card-issuer">${card.issuer} • $${card.annualFee}/yr</div>
@@ -702,6 +743,27 @@ const UI = {
       </div>
 
       <div class="settings-section">
+        <div class="settings-section-title">☁️ GitHub Sync (Cross-Device)</div>
+        <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:8px;">
+          <div style="font-size:0.8rem; color:var(--text-secondary); line-height:1.5; margin-bottom:4px;">
+            Sync your data across phone & computer via your GitHub repo.
+            Your data is stored as <code style="color:var(--accent)">data/my-data.json</code> in the repo.
+          </div>
+          <div id="github-sync-status"></div>
+          <input class="settings-input" id="github-token-input" type="password"
+                 placeholder="GitHub Personal Access Token (repo scope)"
+                 value="${GitHubSync.getConfig()?.token || ''}">
+          <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
+            Create a token at <a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--accent)">github.com/settings/tokens</a> with <b>repo</b> scope
+          </div>
+          <button class="settings-btn primary" onclick="UI.setupGitHubSync()" style="margin-top:8px">
+            🔗 Connect & Sync
+          </button>
+          ${GitHubSync.isConfigured() ? '<button class="settings-btn secondary" onclick="UI.syncNow()">⟳ Sync Now</button>' : ''}
+        </div>
+      </div>
+
+      <div class="settings-section">
         <div class="settings-section-title">Data Management</div>
         <button class="settings-btn primary" onclick="Storage.exportData()">📥 Export Data (JSON Backup)</button>
         <button class="settings-btn secondary" onclick="UI.importData()">📤 Import Data</button>
@@ -717,6 +779,73 @@ const UI = {
         </div>
       </div>
     `;
+  },
+
+  async setupGitHubSync() {
+    const token = document.getElementById('github-token-input').value.trim();
+    if (!token) {
+      App.showToast('Please enter a GitHub token', 'warning');
+      return;
+    }
+
+    const statusEl = document.getElementById('github-sync-status');
+    statusEl.innerHTML = '<span style="color:var(--warning)">⏳ Validating token...</span>';
+
+    const result = await GitHubSync.validateToken(token);
+    if (!result.valid) {
+      statusEl.innerHTML = '<span style="color:var(--critical)">❌ Invalid token</span>';
+      return;
+    }
+
+    // Auto-detect repo from page URL
+    const detected = GitHubSync.detectRepo();
+    const config = {
+      token,
+      owner: detected?.owner || result.login,
+      repo: detected?.repo || 'card-benefits-tracker'
+    };
+    GitHubSync.saveConfig(config);
+
+    statusEl.innerHTML = `<span style="color:var(--success)">✅ Connected as ${result.login}</span>`;
+
+    // Now sync
+    await this.syncNow();
+    this.renderSettings();
+  },
+
+  async syncNow() {
+    if (!GitHubSync.isConfigured()) {
+      App.showToast('Set up GitHub sync first', 'warning');
+      return;
+    }
+
+    this._showSyncIndicator('syncing');
+
+    // First, pull latest from repo
+    const remoteData = await GitHubSync.loadFromRepo();
+    if (remoteData) {
+      const localData = Storage.load();
+      // If remote has more recent data, use it
+      Storage._cache = {
+        ...DEFAULT_DATA,
+        ...remoteData,
+        settings: { ...DEFAULT_DATA.settings, ...localData.settings, ...(remoteData.settings || {}) }
+      };
+      Storage._saveLocal();
+    }
+
+    // Then push current data
+    const ok = await GitHubSync.saveToRepo(Storage.load());
+    if (ok) {
+      this._showSyncIndicator('synced');
+      App.showToast('✅ Data synced to GitHub!', 'success');
+    } else {
+      this._showSyncIndicator('error');
+      App.showToast('❌ Sync failed — check token permissions', 'warning');
+    }
+
+    // Re-render current view
+    App.switchTab(App.currentTab);
   },
 
   async toggleNotifications(enabled) {

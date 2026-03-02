@@ -3,20 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <meta name="theme-color" content="#1a1a2e">
+  <meta name="theme-color" content="#0c1222">
   <meta name="description" content="Track and redeem your credit card benefits — never miss a perk again.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Card Benefits Tracker</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
   <div id="app">
     <!-- Header -->
     <header class="app-header">
-      <h1>💳 Card Benefits</h1>
+      <div class="header-left">
+        <h1>💳 Card Benefits</h1>
+        <span id="sync-indicator" class="sync-indicator hidden"></span>
+      </div>
       <div class="header-actions">
         <button id="btn-show-hidden" class="btn-icon" title="Show hidden benefits">
           <span class="icon">👁️</span>
@@ -27,15 +33,27 @@
     <!-- Summary Bar -->
     <div id="summary-bar" class="summary-bar">
       <div class="summary-item">
-        <span class="summary-value" id="summary-redeemed">0/0</span>
+        <div class="summary-ring" id="summary-ring">
+          <svg viewBox="0 0 36 36">
+            <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3"/>
+            <circle id="summary-ring-fill" cx="18" cy="18" r="15.9" fill="none" stroke="url(#ring-gradient)" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round" transform="rotate(-90 18 18)"/>
+            <defs>
+              <linearGradient id="ring-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#6ee7b7"/>
+                <stop offset="100%" stop-color="#3b82f6"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <span class="summary-ring-text" id="summary-redeemed">0/0</span>
+        </div>
         <span class="summary-label">Redeemed</span>
       </div>
       <div class="summary-item">
-        <span class="summary-value" id="summary-saved">$0</span>
-        <span class="summary-label">Saved This Month</span>
+        <span class="summary-value accent-green" id="summary-saved">$0</span>
+        <span class="summary-label">Saved</span>
       </div>
       <div class="summary-item">
-        <span class="summary-value" id="summary-expiring">0</span>
+        <span class="summary-value accent-amber" id="summary-expiring">0</span>
         <span class="summary-label">Expiring Soon</span>
       </div>
     </div>
@@ -77,6 +95,7 @@
   <!-- Toast Container -->
   <div id="toast-container" class="toast-container"></div>
 
+  <script src="js/github-sync.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/benefits.js"></script>
   <script src="js/notifications.js"></script>

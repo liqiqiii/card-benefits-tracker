@@ -93,6 +93,9 @@ const App = {
     await UI.loadCardData();
     UI.loadCustomCards();
 
+    // Initialize storage (tries GitHub sync, falls back to localStorage)
+    await Storage.init();
+
     // Clean up old redemption records
     Storage.cleanupOldRedemptions();
 

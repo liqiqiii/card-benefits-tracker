@@ -4,8 +4,8 @@
   "description": "Track and redeem your credit card benefits — never miss a perk again.",
   "start_url": ".",
   "display": "standalone",
-  "background_color": "#0f0f1a",
-  "theme_color": "#1a1a2e",
+  "background_color": "#0c1222",
+  "theme_color": "#0c1222",
   "orientation": "portrait",
   "icons": [
     {

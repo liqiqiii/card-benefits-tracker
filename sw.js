@@ -1,11 +1,12 @@
 // Service Worker for Card Benefits Tracker
 // Provides offline caching and notification support
 
-const CACHE_NAME = 'card-benefits-v2';
+const CACHE_NAME = 'card-benefits-v3';
 const ASSETS = [
   './',
   './index.html',
   './css/styles.css',
+  './js/github-sync.js',
   './js/storage.js',
   './js/benefits.js',
   './js/notifications.js',

@@ -1,7 +1,7 @@
 /**
- * storage.js — localStorage abstraction for user data
- * Handles: myCards, hiddenBenefits, redeemedBenefits, settings
- * Includes JSON export/import for device transfer
+ * storage.js — Data persistence layer
+ * Primary: GitHub repo sync (data/my-data.json) for cross-device access
+ * Fallback: localStorage for offline/unsynced usage
  */
 
 const STORAGE_KEY = 'cardBenefitsTracker';
@@ -17,20 +17,45 @@ const DEFAULT_DATA = {
     emailjsServiceId: '',
     emailjsTemplateId: '',
     emailjsPublicKey: '',
-    reminderDaysBefore: 7
+    reminderDaysBefore: 7,
+    githubSyncEnabled: false
   }
 };
 
 const Storage = {
   _cache: null,
+  _initialized: false,
 
-  load() {
-    if (this._cache) return this._cache;
+  /**
+   * Initialize storage — tries GitHub first, falls back to localStorage
+   */
+  async init() {
+    // Always load localStorage first (fast, offline-safe)
+    this._loadLocal();
+
+    // Then try to load from GitHub if configured
+    if (GitHubSync.isConfigured()) {
+      const remoteData = await GitHubSync.loadFromRepo();
+      if (remoteData) {
+        // Merge: remote data wins, but preserve local settings
+        const localSettings = this._cache.settings;
+        this._cache = {
+          ...DEFAULT_DATA,
+          ...remoteData,
+          settings: { ...DEFAULT_DATA.settings, ...localSettings, ...(remoteData.settings || {}) }
+        };
+        // Update localStorage to match
+        this._saveLocal();
+      }
+    }
+    this._initialized = true;
+  },
+
+  _loadLocal() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) {
         const parsed = JSON.parse(raw);
-        // Merge with defaults to handle new fields
         this._cache = {
           ...DEFAULT_DATA,
           ...parsed,
@@ -43,14 +68,26 @@ const Storage = {
       console.error('Failed to load data:', e);
       this._cache = JSON.parse(JSON.stringify(DEFAULT_DATA));
     }
+  },
+
+  load() {
+    if (!this._cache) this._loadLocal();
     return this._cache;
   },
 
-  save() {
+  _saveLocal() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(this._cache));
     } catch (e) {
       console.error('Failed to save data:', e);
+    }
+  },
+
+  save() {
+    this._saveLocal();
+    // Also sync to GitHub if configured
+    if (GitHubSync.isConfigured()) {
+      GitHubSync.debouncedSave(this._cache);
     }
   },
 
