@@ -89,6 +89,9 @@ const App = {
     // Init confetti
     Confetti.init();
 
+    // Check for auto-setup token in URL (?token=xxx)
+    this._handleTokenFromUrl();
+
     // Load card catalog data
     await UI.loadCardData();
     UI.loadCustomCards();
@@ -122,6 +125,33 @@ const App = {
 
     // Register service worker
     this.registerSW();
+  },
+
+  /**
+   * Auto-configure sync from URL parameter: ?token=xxx
+   * Clears the token from URL immediately after reading.
+   */
+  _handleTokenFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token) {
+      const detected = GitHubSync.detectRepo();
+      const config = GitHubSync.getConfig() || {};
+      config.token = token;
+      config.owner = config.owner || detected?.owner;
+      config.repo = config.repo || detected?.repo;
+      GitHubSync.saveConfig(config);
+
+      // Clean the URL (remove token from browser history)
+      const cleanUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, '', cleanUrl);
+
+      // Show a toast after init completes
+      setTimeout(() => {
+        App.showToast('🔗 Sync connected! Your data will sync across devices.', 'success');
+        UI._showSyncIndicator('synced');
+      }, 500);
+    }
   },
 
   switchTab(tab) {

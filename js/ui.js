@@ -818,19 +818,24 @@ const UI = {
         <div class="settings-row" style="flex-direction:column; align-items:stretch; gap:8px;">
           <div style="font-size:0.8rem; color:var(--text-secondary); line-height:1.5; margin-bottom:4px;">
             Sync your data across phone & computer via your GitHub repo.
-            Your data is stored as <code style="color:var(--accent)">data/my-data.json</code> in the repo.
           </div>
-          <div id="github-sync-status"></div>
+          <div id="github-sync-status">${GitHubSync.isConfigured()
+            ? '<span style="color:var(--success)">✅ Sync is connected</span>'
+            : '<span style="color:var(--text-muted)">Not connected</span>'
+          }</div>
           <input class="settings-input" id="github-token-input" type="password"
                  placeholder="GitHub Personal Access Token (repo scope)"
                  value="${GitHubSync.getConfig()?.token || ''}">
           <div style="font-size:0.7rem; color:var(--text-muted); margin-top:2px;">
-            Create a token at <a href="https://github.com/settings/tokens/new" target="_blank" style="color:var(--accent)">github.com/settings/tokens</a> with <b>repo</b> scope
+            Create a token at <a href="https://github.com/settings/tokens/new?scopes=repo&description=Card+Benefits+Tracker+Sync" target="_blank" style="color:var(--accent)">github.com/settings/tokens</a> with <b>repo</b> scope
           </div>
           <button class="settings-btn primary" onclick="UI.setupGitHubSync()" style="margin-top:8px">
             🔗 Connect & Sync
           </button>
-          ${GitHubSync.isConfigured() ? '<button class="settings-btn secondary" onclick="UI.syncNow()">⟳ Sync Now</button>' : ''}
+          ${GitHubSync.isConfigured() ? `
+            <button class="settings-btn secondary" onclick="UI.syncNow()">⟳ Sync Now</button>
+            <button class="settings-btn secondary" onclick="UI.showShareSync()">📱 Share Sync to Another Device</button>
+          ` : ''}
         </div>
       </div>
 
@@ -892,11 +897,12 @@ const UI = {
 
     this._showSyncIndicator('syncing');
 
-    // First, pull latest from repo
+    // Pull latest from repo
     const remoteData = await GitHubSync.loadFromRepo();
-    if (remoteData) {
-      const localData = Storage.load();
-      // If remote has more recent data, use it
+    const localData = Storage.load();
+
+    if (remoteData && remoteData.myCards && remoteData.myCards.length > 0) {
+      // Remote has card data — merge: remote cards win, keep local settings
       Storage._cache = {
         ...DEFAULT_DATA,
         ...remoteData,
@@ -904,8 +910,9 @@ const UI = {
       };
       Storage._saveLocal();
     }
+    // If local has cards (remote empty or no cards), local data will be pushed below
 
-    // Then push current data
+    // Push current data to repo
     const ok = await GitHubSync.saveToRepo(Storage.load());
     if (ok) {
       this._showSyncIndicator('synced');
@@ -917,6 +924,44 @@ const UI = {
 
     // Re-render current view
     App.switchTab(App.currentTab);
+  },
+
+  showShareSync() {
+    const config = GitHubSync.getConfig();
+    if (!config?.token) {
+      App.showToast('Set up sync first', 'warning');
+      return;
+    }
+    const baseUrl = window.location.origin + window.location.pathname;
+    const syncUrl = `${baseUrl}?token=${encodeURIComponent(config.token)}`;
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(syncUrl)}`;
+
+    const modal = document.getElementById('modal-content');
+    modal.innerHTML = `
+      <div class="modal-header">
+        <span class="modal-title">📱 Share Sync</span>
+        <button class="modal-close" onclick="App.closeModal()">✕</button>
+      </div>
+      <div style="text-align:center; padding:16px 0;">
+        <p style="font-size:0.85rem; color:var(--text-secondary); margin:0 0 16px; line-height:1.5;">
+          Scan this QR code on your phone to set up sync automatically.
+        </p>
+        <div style="background:white; display:inline-block; padding:12px; border-radius:12px;">
+          <img src="${qrUrl}" alt="Sync QR Code" style="display:block; width:220px; height:220px;">
+        </div>
+        <p style="font-size:0.7rem; color:var(--text-muted); margin:16px 0 0; line-height:1.4;">
+          Or copy this link and open it on your other device:
+        </p>
+        <div style="background:var(--bg-card); padding:10px; border-radius:8px; margin-top:8px; word-break:break-all; font-size:0.7rem; color:var(--accent); user-select:all; cursor:pointer;"
+             onclick="navigator.clipboard.writeText('${syncUrl}'); App.showToast('📋 Link copied!', 'success');">
+          ${syncUrl}
+        </div>
+        <div style="font-size:0.7rem; color:var(--warning); margin-top:12px;">
+          ⚠️ This link contains your sync token. Don't share it publicly.
+        </div>
+      </div>
+    `;
+    App.openModal();
   },
 
   async toggleNotifications(enabled) {
