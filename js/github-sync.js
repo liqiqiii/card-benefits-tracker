@@ -60,51 +60,49 @@ const GitHubSync = {
     const owner = config?.owner || detected?.owner;
     const repo = config?.repo || detected?.repo;
 
-    // Try raw GitHub URL first (public, no auth, cache-busted)
     if (owner && repo) {
+      // Try 1: GitHub API (always fresh, no CDN cache)
+      // Works without auth for public repos (60 req/hr rate limit)
+      try {
+        const headers = { 'Accept': 'application/vnd.github.v3+json' };
+        if (config?.token) headers['Authorization'] = `Bearer ${config.token}`;
+
+        const resp = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/contents/data/my-data.json`,
+          { headers, cache: 'no-store' }
+        );
+        if (resp.ok) {
+          const fileData = await resp.json();
+          const content = atob(fileData.content);
+          // Save SHA for future writes
+          if (config) {
+            config.fileSha = fileData.sha;
+            config.owner = owner;
+            config.repo = repo;
+            this.saveConfig(config);
+          } else {
+            this.saveConfig({ owner, repo, fileSha: fileData.sha });
+          }
+          return JSON.parse(content);
+        }
+      } catch (e) {
+        console.log('API fetch failed, trying raw URL:', e.message);
+      }
+
+      // Try 2: raw.githubusercontent.com (may be CDN-cached up to 5 min)
       try {
         const cacheBust = Date.now();
         const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/data/my-data.json?cb=${cacheBust}`;
         const resp = await fetch(rawUrl, { cache: 'no-store' });
         if (resp.ok) {
-          const data = await resp.json();
-          // Also fetch SHA for future writes if we have a token
-          if (config?.token) {
-            this._fetchSha(config);
-          }
-          return data;
+          return await resp.json();
         }
       } catch (e) {
-        console.log('Raw URL fetch failed, trying alternatives:', e.message);
+        console.log('Raw URL fetch failed:', e.message);
       }
     }
 
-    // Try GitHub API with token
-    if (config?.token && owner && repo) {
-      try {
-        const resp = await fetch(
-          `https://api.github.com/repos/${owner}/${repo}/contents/data/my-data.json`,
-          {
-            headers: {
-              'Authorization': `Bearer ${config.token}`,
-              'Accept': 'application/vnd.github.v3+json'
-            },
-            cache: 'no-store'
-          }
-        );
-        if (resp.ok) {
-          const fileData = await resp.json();
-          const content = atob(fileData.content);
-          config.fileSha = fileData.sha;
-          this.saveConfig(config);
-          return JSON.parse(content);
-        }
-      } catch (e) {
-        console.log('API fetch failed:', e.message);
-      }
-    }
-
-    // Try local path (works on GitHub Pages or local dev)
+    // Try 3: local path (works on GitHub Pages after deploy, or local dev)
     try {
       const resp = await fetch('data/my-data.json?cb=' + Date.now(), { cache: 'no-store' });
       if (resp.ok) {
