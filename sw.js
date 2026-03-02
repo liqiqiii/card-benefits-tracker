@@ -1,7 +1,7 @@
 // Service Worker for Card Benefits Tracker
 // Provides offline caching and notification support
 
-const CACHE_NAME = 'card-benefits-v3';
+const CACHE_NAME = 'card-benefits-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -15,6 +15,9 @@ const ASSETS = [
   './data/cards.json',
   './manifest.json'
 ];
+
+// Files that must NEVER be cached (dynamic user data)
+const NO_CACHE = ['my-data.json'];
 
 // Install: cache all assets
 self.addEventListener('install', (event) => {
@@ -34,11 +37,24 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch: serve from cache, fallback to network
+// Fetch: never cache my-data.json; serve others from cache with network update
 self.addEventListener('fetch', (event) => {
+  const url = event.request.url;
+
+  // Never cache user data files — always go to network
+  if (NO_CACHE.some(f => url.includes(f))) {
+    event.respondWith(fetch(event.request).catch(() => new Response('{}', { headers: { 'Content-Type': 'application/json' } })));
+    return;
+  }
+
+  // Also skip caching for GitHub API calls
+  if (url.includes('api.github.com') || url.includes('raw.githubusercontent.com')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cached) => {
-      // Return cached version, but also fetch update for next time
       const fetchPromise = fetch(event.request).then((response) => {
         if (response && response.status === 200) {
           const responseClone = response.clone();

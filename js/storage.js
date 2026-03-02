@@ -27,27 +27,32 @@ const Storage = {
   _initialized: false,
 
   /**
-   * Initialize storage — tries GitHub first, falls back to localStorage
+   * Initialize storage — always fetches latest from GitHub repo, falls back to localStorage
    */
   async init() {
-    // Always load localStorage first (fast, offline-safe)
+    // Load localStorage first (fast, offline-safe)
     this._loadLocal();
 
-    // Then try to load from GitHub if configured
-    if (GitHubSync.isConfigured()) {
+    // Always try to load from repo (public repos don't need auth for reads)
+    try {
       const remoteData = await GitHubSync.loadFromRepo();
-      if (remoteData) {
-        // Merge: remote data wins, but preserve local settings
-        const localSettings = this._cache.settings;
+      if (remoteData && remoteData.myCards && remoteData.myCards.length > 0) {
+        // Remote has data — use it, but keep local-only settings (like token config)
+        const localSettings = this._cache.settings || {};
         this._cache = {
           ...DEFAULT_DATA,
           ...remoteData,
           settings: { ...DEFAULT_DATA.settings, ...localSettings, ...(remoteData.settings || {}) }
         };
-        // Update localStorage to match
         this._saveLocal();
+      } else if (!remoteData && this._cache.myCards.length > 0 && GitHubSync.isConfigured()) {
+        // Local has data but remote is empty — push local data to repo
+        GitHubSync.debouncedSave(this._cache);
       }
+    } catch (e) {
+      console.log('Remote load failed, using localStorage:', e.message);
     }
+
     this._initialized = true;
   },
 

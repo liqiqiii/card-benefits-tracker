@@ -2,11 +2,16 @@
  * github-sync.js — Sync user data to/from GitHub repo
  * Stores data as data/my-data.json in the repo via GitHub API
  * Enables cross-device sync (phone + computer)
+ *
+ * Two-layer approach:
+ *  READ: Always fetch data/my-data.json from GitHub raw URL (no auth needed, public repo)
+ *  WRITE: Use GitHub API with PAT to commit changes back
  */
 
 const GitHubSync = {
   _syncing: false,
   _debounceTimer: null,
+  _writeQueue: null,
 
   /**
    * Get sync config from localStorage (token + repo info)
@@ -43,12 +48,80 @@ const GitHubSync = {
   },
 
   /**
-   * Load user data from the repo (data/my-data.json)
+   * READ: Fetch user data from the repo.
+   * Try 1: raw GitHub URL (no auth, works for public repos, always fresh)
+   * Try 2: GitHub API with PAT (works for private repos too)
+   * Try 3: local path (works when running locally / on Pages after deploy)
    */
   async loadFromRepo() {
+    // Determine repo info
+    const detected = this.detectRepo();
     const config = this.getConfig();
-    if (!config) return null;
+    const owner = config?.owner || detected?.owner;
+    const repo = config?.repo || detected?.repo;
 
+    // Try raw GitHub URL first (public, no auth, cache-busted)
+    if (owner && repo) {
+      try {
+        const cacheBust = Date.now();
+        const rawUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/data/my-data.json?cb=${cacheBust}`;
+        const resp = await fetch(rawUrl, { cache: 'no-store' });
+        if (resp.ok) {
+          const data = await resp.json();
+          // Also fetch SHA for future writes if we have a token
+          if (config?.token) {
+            this._fetchSha(config);
+          }
+          return data;
+        }
+      } catch (e) {
+        console.log('Raw URL fetch failed, trying alternatives:', e.message);
+      }
+    }
+
+    // Try GitHub API with token
+    if (config?.token && owner && repo) {
+      try {
+        const resp = await fetch(
+          `https://api.github.com/repos/${owner}/${repo}/contents/data/my-data.json`,
+          {
+            headers: {
+              'Authorization': `Bearer ${config.token}`,
+              'Accept': 'application/vnd.github.v3+json'
+            },
+            cache: 'no-store'
+          }
+        );
+        if (resp.ok) {
+          const fileData = await resp.json();
+          const content = atob(fileData.content);
+          config.fileSha = fileData.sha;
+          this.saveConfig(config);
+          return JSON.parse(content);
+        }
+      } catch (e) {
+        console.log('API fetch failed:', e.message);
+      }
+    }
+
+    // Try local path (works on GitHub Pages or local dev)
+    try {
+      const resp = await fetch('data/my-data.json?cb=' + Date.now(), { cache: 'no-store' });
+      if (resp.ok) {
+        return await resp.json();
+      }
+    } catch (e) {
+      console.log('Local fetch failed:', e.message);
+    }
+
+    return null;
+  },
+
+  /**
+   * Fetch file SHA in the background (needed for writes)
+   */
+  async _fetchSha(config) {
+    if (config.fileSha) return;
     try {
       const resp = await fetch(
         `https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/my-data.json`,
@@ -56,72 +129,46 @@ const GitHubSync = {
           headers: {
             'Authorization': `Bearer ${config.token}`,
             'Accept': 'application/vnd.github.v3+json'
-          }
+          },
+          cache: 'no-store'
         }
       );
-
-      if (resp.status === 404) {
-        // File doesn't exist yet — that's fine
-        return null;
+      if (resp.ok) {
+        const fileData = await resp.json();
+        config.fileSha = fileData.sha;
+        this.saveConfig(config);
       }
-
-      if (!resp.ok) {
-        console.error('GitHub API error:', resp.status);
-        return null;
-      }
-
-      const fileData = await resp.json();
-      const content = atob(fileData.content);
-      const parsed = JSON.parse(content);
-      // Store the SHA for future updates
-      config.fileSha = fileData.sha;
-      this.saveConfig(config);
-      return parsed;
-    } catch (e) {
-      console.error('Failed to load from GitHub:', e);
-      return null;
-    }
+    } catch { /* ignore */ }
   },
 
   /**
-   * Save user data to the repo (data/my-data.json)
+   * WRITE: Save user data to the repo (data/my-data.json)
    */
   async saveToRepo(data) {
     const config = this.getConfig();
-    if (!config) return false;
+    if (!config?.token) return false;
 
-    if (this._syncing) return false;
+    if (this._syncing) {
+      // Queue the latest data so we don't lose changes
+      this._writeQueue = data;
+      return false;
+    }
     this._syncing = true;
 
     try {
-      // Get current file SHA (needed for updates)
-      let sha = config.fileSha;
-      if (!sha) {
-        try {
-          const checkResp = await fetch(
-            `https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/my-data.json`,
-            {
-              headers: {
-                'Authorization': `Bearer ${config.token}`,
-                'Accept': 'application/vnd.github.v3+json'
-              }
-            }
-          );
-          if (checkResp.ok) {
-            const existing = await checkResp.json();
-            sha = existing.sha;
-          }
-        } catch { /* file doesn't exist yet */ }
+      // Get current file SHA if we don't have it
+      if (!config.fileSha) {
+        await this._fetchSha(config);
       }
 
       const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
 
       const body = {
-        message: `Update my card data — ${new Date().toISOString().split('T')[0]}`,
+        message: `Sync card data — ${new Date().toISOString().replace('T', ' ').substring(0, 19)}`,
         content: content,
         branch: 'main'
       };
-      if (sha) body.sha = sha;
+      if (config.fileSha) body.sha = config.fileSha;
 
       const resp = await fetch(
         `https://api.github.com/repos/${config.owner}/${config.repo}/contents/data/my-data.json`,
@@ -141,9 +188,23 @@ const GitHubSync = {
         config.fileSha = result.content.sha;
         this.saveConfig(config);
         this._syncing = false;
+
+        // Process queued write if any
+        if (this._writeQueue) {
+          const queued = this._writeQueue;
+          this._writeQueue = null;
+          return this.saveToRepo(queued);
+        }
         return true;
       } else {
-        const err = await resp.text();
+        // SHA conflict — re-fetch SHA and retry once
+        const err = await resp.json().catch(() => ({}));
+        if (resp.status === 409 || (err.message && err.message.includes('sha'))) {
+          config.fileSha = null;
+          this.saveConfig(config);
+          this._syncing = false;
+          return this.saveToRepo(data);
+        }
         console.error('GitHub save failed:', resp.status, err);
         this._syncing = false;
         return false;
@@ -156,11 +217,12 @@ const GitHubSync = {
   },
 
   /**
-   * Debounced save — waits 2 seconds after last change before syncing
+   * Debounced save — waits 1.5 seconds after last change before syncing
    */
   debouncedSave(data) {
     if (this._debounceTimer) clearTimeout(this._debounceTimer);
     this._debounceTimer = setTimeout(() => {
+      UI._showSyncIndicator('syncing');
       this.saveToRepo(data).then(ok => {
         if (ok) {
           UI._showSyncIndicator('synced');
@@ -168,12 +230,11 @@ const GitHubSync = {
           UI._showSyncIndicator('error');
         }
       });
-      UI._showSyncIndicator('syncing');
-    }, 2000);
+    }, 1500);
   },
 
   /**
-   * Validate a GitHub token by making a simple API call
+   * Validate a GitHub token
    */
   async validateToken(token) {
     try {
