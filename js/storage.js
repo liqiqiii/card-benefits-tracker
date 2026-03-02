@@ -45,9 +45,12 @@ const Storage = {
           settings: { ...DEFAULT_DATA.settings, ...localSettings, ...(remoteData.settings || {}) }
         };
         this._saveLocal();
-      } else if (!remoteData && this._cache.myCards.length > 0 && GitHubSync.isConfigured()) {
-        // Local has data but remote is empty — push local data to repo
-        GitHubSync.debouncedSave(this._cache);
+      } else if (this._cache.myCards.length > 0) {
+        // Local has data but remote is empty — keep local data
+        // If sync is configured, push local data to repo
+        if (GitHubSync.isConfigured()) {
+          GitHubSync.debouncedSave(this._cache);
+        }
       }
     } catch (e) {
       console.log('Remote load failed, using localStorage:', e.message);

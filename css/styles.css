@@ -1036,6 +1036,152 @@ html, body {
 }
 
 /* ===========================
+   Card Picker (First-Run)
+   =========================== */
+.card-picker {
+  padding: 8px 0 100px;
+}
+
+.picker-header {
+  text-align: center;
+  padding: 24px 16px 20px;
+}
+
+.picker-icon {
+  font-size: 2.5rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.picker-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 6px;
+}
+
+.picker-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.picker-issuer-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 16px 16px 6px;
+}
+
+.picker-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.picker-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+
+.picker-card:active {
+  background: rgba(79, 140, 255, 0.08);
+}
+
+.picker-card-check {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.picker-card.selected .picker-card-check {
+  background: var(--gradient-primary);
+  border-color: transparent;
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+
+.picker-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.picker-card-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.picker-card-detail {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.picker-card.selected {
+  background: rgba(79, 140, 255, 0.06);
+}
+
+.picker-card.selected .picker-card-name {
+  color: var(--accent);
+}
+
+.picker-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg-primary);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+
+.picker-done-btn {
+  width: 100%;
+  padding: 14px !important;
+  font-size: 1rem !important;
+  border-radius: 14px !important;
+}
+
+@media (min-width: 600px) {
+  .picker-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    padding: 0 8px;
+  }
+  .picker-issuer-label {
+    grid-column: 1 / -1;
+  }
+  .picker-card {
+    border-radius: var(--radius-sm);
+    border-bottom: none;
+  }
+  .picker-footer {
+    max-width: 500px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 16px 16px 0 0;
+  }
+}
+
+/* ===========================
    Benefit Detail in Modal
    =========================== */
 .benefit-detail-value {

@@ -91,14 +91,7 @@ const UI = {
       : allBenefits.filter(b => !b.hidden);
 
     if (Storage.getMyCards().length === 0) {
-      main.innerHTML = `
-        <div class="empty-state">
-          <span class="icon">💳</span>
-          <div class="title">No Cards Added Yet</div>
-          <div class="desc">Add credit cards to your wallet to start tracking benefits.</div>
-          <button class="btn" onclick="App.switchTab('catalog')">Browse Card Catalog</button>
-        </div>
-      `;
+      this._renderCardPicker(main);
       this.updateSummary(allBenefits);
       return;
     }
@@ -314,6 +307,84 @@ const UI = {
     if (ringFill) {
       ringFill.setAttribute('stroke-dasharray', `${pct}, 100`);
     }
+  },
+
+  // ========================
+  // FIRST-RUN CARD PICKER
+  // ========================
+  _renderCardPicker(container) {
+    const selected = this._pickerSelected || new Set();
+    let cardsHtml = '';
+
+    // Group cards by issuer
+    const byIssuer = {};
+    for (const card of this.cardData) {
+      if (!byIssuer[card.issuer]) byIssuer[card.issuer] = [];
+      byIssuer[card.issuer].push(card);
+    }
+
+    for (const [issuer, cards] of Object.entries(byIssuer)) {
+      const issuerInfo = this.getIssuerInfo(issuer);
+      cardsHtml += `<div class="picker-issuer-label">${issuerInfo.emoji} ${issuer}</div>`;
+      for (const card of cards) {
+        const isSelected = selected.has(card.id);
+        const totalValue = card.benefits.reduce((sum, b) => sum + b.value, 0);
+        cardsHtml += `
+          <div class="picker-card ${isSelected ? 'selected' : ''}"
+               onclick="UI._togglePickerCard('${card.id}')"
+               style="--card-color: ${card.color}">
+            <div class="picker-card-check">${isSelected ? '✓' : ''}</div>
+            <div class="picker-card-info">
+              <div class="picker-card-name">${card.name}</div>
+              <div class="picker-card-detail">$${card.annualFee}/yr • ${card.benefits.length} benefits • ~$${totalValue}/period</div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    container.innerHTML = `
+      <div class="card-picker">
+        <div class="picker-header">
+          <span class="picker-icon">💳</span>
+          <h2 class="picker-title">Select Your Cards</h2>
+          <p class="picker-subtitle">Tap the cards you own to start tracking benefits</p>
+        </div>
+        <div class="picker-list">
+          ${cardsHtml}
+        </div>
+        ${selected.size > 0 ? `
+          <div class="picker-footer">
+            <button class="btn primary picker-done-btn" onclick="UI._finishCardPicker()">
+              Start Tracking ${selected.size} Card${selected.size !== 1 ? 's' : ''} →
+            </button>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  },
+
+  _pickerSelected: null,
+
+  _togglePickerCard(cardId) {
+    if (!this._pickerSelected) this._pickerSelected = new Set();
+    if (this._pickerSelected.has(cardId)) {
+      this._pickerSelected.delete(cardId);
+    } else {
+      this._pickerSelected.add(cardId);
+    }
+    this._renderCardPicker(document.getElementById('main-content'));
+  },
+
+  _finishCardPicker() {
+    if (!this._pickerSelected || this._pickerSelected.size === 0) return;
+    for (const cardId of this._pickerSelected) {
+      Storage.addCard(cardId);
+    }
+    this._pickerSelected = null;
+    App.showToast(`✅ ${Storage.getMyCards().length} cards added to your wallet!`, 'success');
+    Confetti.burst();
+    this.renderDashboard();
   },
 
   // ========================
